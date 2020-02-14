@@ -5,8 +5,9 @@
             :url "https://www.eclipse.org/legal/epl-2.0/"}
   :dependencies [[org.clojure/clojure "1.10.0"]
                  [alembic "0.3.2"]
-                 ;; [cnuernber/libpython-clj "1.27"]
-                 ;; [panthera "0.1-alpha.16"]
+                 [cnuernber/libpython-clj "1.36"]
+                 [panthera "0.1-alpha.18"]
+                 [incanter "1.9.3"]
                  [techascent/tech.ml.dataset "1.61"]
                  #_[cider/cider-nrepl "0.22.3"]]
   ;; :repl-options {:init-ns clj-datasci-starter.core}
