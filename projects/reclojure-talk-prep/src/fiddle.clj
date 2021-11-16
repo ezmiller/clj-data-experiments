@@ -1,22 +1,17 @@
 (ns fiddle)
 
 (comment
-  ;; starting the repl
-  ;; clojure -Sdeps "$(curl -sL https://bit.ly/johnsdeps)" -M:ad-hoc/data-science:alpha/hot-load:repl/cider-refactor -r
+  ;;---- starting the repl (start in command line in the folder where you are saving this file)
+  clojure -Sdeps "$(curl -sL https://bit.ly/johnsdeps)" -M:ad-hoc/data-science:alpha/hot-load:repl/cider -r
+  ;;---- once started just cider-connect-clj to the port displayed in terminal ^^^
   )
 
-(require '[clojure.tools.deps.alpha.repl :refer [add-libs]])
+;; (require '[clojure.tools.deps.alpha.repl :refer [add-libs]])
 
 ;; (add-libs '{scicloj/notespace {:mvn/version "4-alpha-10"}})
 
 (require '[scicloj.notespace.v4.api :as notespace]
          '[scicloj.kindly.kind :as kind])
-
-(comment 
-  (notespace/update-config
-   #(assoc-in %
-              [:by-ns *ns* :source-base-path]
-              "/home/sakalli/projects/re_clojure2021/")))
 
 (comment
   (notespace/restart!)
@@ -28,7 +23,7 @@
   )
 
 ;;;;
-(add-libs '{scicloj/tablecloth {:mvn/version "6.025"}})
+;; (add-libs '{scicloj/tablecloth {:mvn/version "6.025"}})
 
 
 (require '[tablecloth.api :as table])
@@ -36,7 +31,8 @@
 (require '[tech.v3.datatype.functional :as fun])
 
 
-(def raw-data (read-string (slurp "../zulip-scicloj.txt")))
+;;(def raw-data (read-string (slurp "../zulip-scicloj.txt")))
+(def raw-data (read-string (slurp "./zulip-scicloj.txt")))
 
 (-> raw-data first keys)
 
@@ -57,18 +53,34 @@
 (-> data
     (table/select-rows (comp #(= "local data science courses" %) :subject)))
 
-(table/head data-with-diff)
-
 (def prompt-response-threshold (* 60 60 12))
+
+(defn secs-since-different-sender
+  [sender gap-duration]
+ (->>
+  (map #(identity [%1 %2]) sender gap-duration)
+  (reduce (fn [acc current]
+            (let [last (first acc)
+                  last-sender (first last)
+                  last-gap-duration (second last)
+                  current-sender (first current)
+                  current-gap-duratiion (second current)]
+              (if (= current-sender last-sender)
+                (conj (rest acc) [last-sender 0] [current-sender (+ current-gap-duratiion
+                                                                    last-gap-duration)])
+                (conj acc current)))) '())
+  reverse
+  (map second)))
 
 (-> data
     (table/order-by :timestamp)
     (table/group-by :subject)
-    (table/add-column :secs-since-last #(let [timestamp (:timestamp %)]
-                                          (fun/- timestamp (fun/shift timestamp 1))))
     ;; create a flag to point when the previous message was posted by the same user
     (table/add-column :same-sender-as-last? #(let [sender-id (:sender_id %)]
                                                (fun/eq sender-id (fun/shift sender-id 1))))
+    (table/add-column :secs-since-last #(let [timestamp (:timestamp %)]
+                                          (fun/- timestamp (fun/shift timestamp 1))))
+    (table/add-column :secs-since-diff-sender #(secs-since-different-sender (:sender_id %) (:secs-since-last %)))
     (table/add-column :prompt-response? #(fun/< (:secs-since-last %)
                                                 prompt-response-threshold))
     (table/add-column :next-response-prompt? #(fun/< (fun/shift (:secs-since-last %) -1)
@@ -92,5 +104,6 @@
     (table/ungroup)
     (table/select-rows (comp #(= % "preferred notebook") :subject))
     (table/drop-columns [:id :type :stream_id :timestamp :sender_id #_:secs-since-last :same-sender-as-last? :content])
+    (table/select-columns [:sender_full_name :secs-since-diff-sender])
     (vary-meta merge {:print-column-max-width 50})
     )

@@ -7,5 +7,7 @@
                  [scicloj/notespace "4-alpha-10"]
                  [scicloj/tablecloth "6.025"]
                  [org.scicloj/tablecloth.time "1.00-alpha-4"]
-                 #_[io.github.nextjournal/clerk "0.3.233"]]
+                 #_[io.github.nextjournal/clerk "0.3.233"]
+                 ]
+  :source-paths ["src"]
   :repl-options {:nrepl-middleware [scicloj.notespace.v4.nrepl/middleware]})
