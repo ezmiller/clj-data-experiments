@@ -18,13 +18,10 @@
 
   (notespace/restart-events!)
 
-  (scicloj.notespace.v4.frontend.engine/stop!)
-
   )
 
 ;;;;
 ;; (add-libs '{scicloj/tablecloth {:mvn/version "6.025"}})
-
 
 (require '[tablecloth.api :as table])
 
@@ -102,8 +99,9 @@
     ;; decide heuristics: how long is a break so that a conversation turns inactive
     ;; 3 hours?
     (table/ungroup)
-    (table/select-rows (comp #(= % "preferred notebook") :subject))
-    (table/drop-columns [:id :type :stream_id :timestamp :sender_id #_:secs-since-last :same-sender-as-last? :content])
-    (table/select-columns [:sender_full_name :secs-since-diff-sender])
-    (vary-meta merge {:print-column-max-width 50})
+    ;; (table/select-rows (comp #(= % "preferred notebook") :subject))
+    ;; (table/drop-columns [:id :type :stream_id :timestamp :sender_id #_:secs-since-last :same-sender-as-last? :content])
+    ;; (table/select-columns [:sender_full_name :secs-since-diff-sender])
+    ;; (vary-meta merge {:print-column-max-width 50})
+    (table/write! "new-zulip-data.csv")
     )

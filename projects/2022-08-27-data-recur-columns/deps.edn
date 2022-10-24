@@ -1,0 +1,10 @@
+{:paths ["src"]
+ :deps
+ {org.clojure/clojure {:mvn/version "1.11.1"}
+  ;; scicloj/tablecloth  {:mvn/version "6.094.1"}
+  scicloj/tablecloth  {:local/root "../../../tablecloth"
+                       :deps/manifest :deps}
+  org.scicloj/clay    {:mvn/version "1-alpha15"}
+  org.scicloj/viz.clj {:mvn/version "1-alpha4"}
+  scicloj/clojisr     {:mvn/version "1.0.0-BETA20"}
+  }}
