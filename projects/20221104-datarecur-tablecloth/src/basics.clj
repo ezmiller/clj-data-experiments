@@ -9,15 +9,10 @@
 
 ;;# Tablecloth Basics
 
-;; We will use a tool called "Clay" to help us view this code
-;; in a notebook format.  Let's start it.
-
-(clay/start!)
-
 ;; ### A Brief Introduction to Tablecloth Concepts
 
 ;; What is [tablecloth](https://github.com/scicloj/tablecloth)? It is
-;; a data processing library, written by Tomaz
+;; a data processing library, written by Tomasz
 ;; Sulej (Twitter: [@generateme_blog](https://twitter.com/generateme_blog)),
 ;; particularly valuable for efficient in-memory data exploration of
 ;; tabular data.
@@ -35,8 +30,6 @@
              :b [5 6 7 8]
              :c [9 10 11 12]})
 
-;; If we look at this dataset's type, we can see that it is a special
-;; type of thing.
 
 (def simple-ds
   (tc/dataset {:a [1 2 3 4]
@@ -110,4 +103,9 @@
 (.data (:a simple-ds))
 
 (class (.data (:a simple-ds)))
+
+;; #### End brief Intro
+
+;;  -> [Tablecloth Docs](https://scicloj.github.io/tablecloth/index.html)
+
 

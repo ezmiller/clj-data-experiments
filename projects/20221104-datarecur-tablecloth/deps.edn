@@ -1,4 +1,7 @@
 {:deps
  {org.clojure/clojure {:mvn/version "1.11.1"}
   scicloj/tablecloth  {:mvn/version "6.094.1"}
-  org.scicloj/clay    {:mvn/version "2-alpha7"}}}
+  org.scicloj/tablecloth.time {:mvn/version "1.00-alpha-5-SNAPSHOT"}
+  org.scicloj/clay    {:mvn/version "2-alpha7"}
+  org.scicloj/kindly-default {:mvn/version "1-alpha2"}
+  org.scicloj/viz.clj        {:mvn/version "1-alpha5"}}}
